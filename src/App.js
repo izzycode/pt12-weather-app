@@ -1,5 +1,4 @@
-import React from 'react'
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import React, {Component} from 'react'
 import {Container} from 'react-bootstrap'
 
 import City from './components/City'
@@ -7,17 +6,26 @@ import Search from './components/Search'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
-  return (
-    <Router>
+export default class App extends Component {
+  state = {
+    city: null,
+  }
+
+  setCity = city => this.setState({city})
+
+  render(){
+    let {city} = this.state
+    return (
       <Container>
-        <Switch>
-          <Route path='/city/:cityId' component={City}/>
-          <Route path='/' component={Search}/>
-        </Switch>
+        {
+          city ?
+            <City city={city} resetCity={this.setCity}/>
+          :
+            <Search setCity={this.setCity}/>
+        }
       </Container>
-    </Router>
-  )
+    )
+  }
+
 }
 
-export default App

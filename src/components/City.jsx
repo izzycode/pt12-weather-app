@@ -2,31 +2,26 @@ import React, { Component, Fragment } from 'react'
 import { Row, Col, Card, Image } from 'react-bootstrap'
 
 export default class City extends Component {
-  state = {
-    name: '',
-    forecasts: []
-  }
 
-  componentDidMount() {
-    let url = `https://wyn-weather-api.herokuapp.com/cities/${this.props.match.params.cityId}`
-    fetch(url)
-      .then(res => res.json())
-      .then(({ name, forecasts }) => {
-        this.setState({ name, forecasts })
-      })
-      .catch(err => console.log(err))
-  }
+  backToSearch = () => this.props.resetCity(null)
 
   render() {
-    let city = this.state
+    let {forecasts, name} = this.props.city
     return (
       <Fragment>
+        <a
+          href="#"
+          onClick={this.backToSearch}
+          styles={{float: 'left'}}
+        >
+          ⬅ Back to search
+        </a>
         <h1 className="text-center mt-3" >
-          Weather for {city.name}
+          Weather for {name}
         </h1>
         <Row>
           {
-            this.state.forecasts.map(day => {
+            forecasts.map(day => {
               let date = new Date(day['date'])
               let weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
               return (

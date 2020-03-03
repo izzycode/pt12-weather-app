@@ -1,18 +1,28 @@
 import React, {Component} from 'react'
-import {Route} from 'react-router-dom'
 import {Form, Button} from 'react-bootstrap'
 
 import Cities from './Cities'
 
 
 export default class Search extends Component {
+
+  state = {
+    cities: [],
+  }
+
   handleSubmit = e => {
     e.preventDefault()
-    let query = e.target.query.value
-    this.props.history.push(`/cities?q=${query}`)
+    let url = `https://wyn-weather-api.herokuapp.com/cities?query=${e.target.searchTerm.value.trim()}`
+    fetch(url)
+      .then(res => res.json())
+      .then(cities => {
+        this.setState({ cities })
+      })
+      .catch(err => console.log(err))
   }
 
   render() {
+    let {cities} = this.state
     return (
       <section className="mt-3">
         <h1 className="text-center mt-3">
@@ -22,7 +32,7 @@ export default class Search extends Component {
           <Form.Group controlId="formBasicEmail">
             <Form.Control
               aria-label="City name"
-              name="query"
+              name="searchTerm"
               placeholder="e.g.: Miami"
               type="search" />
           </Form.Group>
@@ -30,7 +40,9 @@ export default class Search extends Component {
             Search
           </Button>
         </Form>
-        <Route path="/cities" component={Cities} />
+        {
+          cities.length ? <Cities cities={cities} setCity={this.props.setCity}/> : null
+        }
       </section>
     )
   }
